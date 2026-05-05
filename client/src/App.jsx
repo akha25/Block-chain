@@ -7,9 +7,10 @@ import Dashboard from './components/Dashboard';
 
 // Dynamic Cyber-Themed Background
 const AnimatedBackground = () => (
-  <div className="fixed inset-0 z-[-1] overflow-hidden bg-gray-50 dark:bg-brand-dark transition-colors duration-300">
-    <div className="absolute top-[-15%] left-[-10%] w-[50%] h-[50%] rounded-full bg-brand-secondary/20 blur-[150px]" />
-    <div className="absolute bottom-[-15%] right-[-10%] w-[50%] h-[50%] rounded-full bg-brand-primary/10 blur-[150px]" />
+  <div className="fixed inset-0 z-[-1] overflow-hidden bg-gray-50 dark:bg-[#020617] transition-colors duration-500">
+    <div className="cyber-grid absolute inset-0 opacity-40 dark:opacity-20" />
+    <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-brand-primary/10 blur-[120px] animate-pulse" />
+    <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[60%] rounded-full bg-brand-secondary/10 blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
   </div>
 );
 

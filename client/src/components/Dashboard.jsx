@@ -125,14 +125,27 @@ export default function Dashboard() {
     <div className="grid lg:grid-cols-3 gap-8">
       {/* Upload Column */}
       <div className="lg:col-span-1 space-y-6">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="glass-panel p-8 rounded-3xl">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }} 
+          animate={{ opacity: 1, scale: 1 }} 
+          whileHover={{ y: -5 }}
+          className="glass-panel p-8 rounded-3xl relative overflow-hidden"
+        >
+          <div className="absolute top-0 right-0 p-4 opacity-10">
+             <Shield className="w-20 h-20 text-brand-primary" />
+          </div>
           <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
-            <HardDrive className="text-brand-primary" /> Secure Upload Gateway
+            <HardDrive className="text-brand-primary animate-pulse" /> Secure Upload Gateway
           </h3>
           
-          <div {...getRootProps()} className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all ${isDragActive ? 'border-brand-primary bg-brand-primary/10 scale-105' : 'border-gray-300 dark:border-gray-600 hover:border-brand-primary/50'}`}>
+          <div {...getRootProps()} className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center cursor-pointer transition-all duration-500 ${isDragActive ? 'border-brand-primary bg-brand-primary/10 scale-105 shadow-[0_0_30px_rgba(0,240,255,0.2)]' : 'border-gray-300 dark:border-gray-600 hover:border-brand-primary/50'}`}>
             <input {...getInputProps()} />
-            <UploadCloud className={`h-16 w-16 mb-4 transition-colors ${isDragActive ? 'text-brand-primary' : 'text-gray-400'}`} />
+            <motion.div
+              animate={isDragActive ? { scale: 1.2 } : { scale: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 10 }}
+            >
+              <UploadCloud className={`h-16 w-16 mb-4 transition-colors ${isDragActive ? 'text-brand-primary' : 'text-gray-400'}`} />
+            </motion.div>
             <p className="text-sm font-medium text-gray-800 dark:text-gray-200 text-center">Drag & drop to encrypt</p>
             <p className="text-xs text-gray-500 mt-2 text-center">or click to browse local files</p>
           </div>
@@ -187,11 +200,26 @@ export default function Dashboard() {
               <p className="text-sm mt-2 opacity-50">Upload a file to secure it on the blockchain.</p>
             </div>
           ) : (
-            <div className="space-y-4 overflow-y-auto pr-2">
+            <motion.div 
+              className="space-y-4 overflow-y-auto pr-2"
+              initial="hidden"
+              animate="visible"
+              variants={{
+                visible: { transition: { staggerChildren: 0.1 } }
+              }}
+            >
               <AnimatePresence>
                 {files.map((file) => (
-                  <motion.div key={file.id} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, scale: 0.9 }} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-white dark:bg-[#0a1122]/80 border border-gray-200 dark:border-gray-800 rounded-2xl hover:border-gray-300 dark:hover:border-gray-600 transition-colors group">
-                    <div className="flex items-center gap-4 mb-4 sm:mb-0">
+                  <motion.div 
+                    key={file.id} 
+                    variants={{
+                      hidden: { opacity: 0, x: 20, scale: 0.95 },
+                      visible: { opacity: 1, x: 0, scale: 1 }
+                    }}
+                    whileHover={{ scale: 1.02, x: 5 }}
+                    exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }} 
+                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-5 bg-white dark:bg-[#0f172a]/80 border border-gray-200 dark:border-gray-800 rounded-2xl hover:border-brand-primary/30 transition-all group"
+                  >                    <div className="flex items-center gap-4 mb-4 sm:mb-0">
                       <div className="p-4 bg-gray-50 dark:bg-brand-dark rounded-xl text-brand-primary border border-gray-200 dark:border-gray-800 group-hover:border-brand-primary/30 transition-colors">
                         <File className="h-6 w-6" />
                       </div>
@@ -229,7 +257,7 @@ export default function Dashboard() {
                   </motion.div>
                 ))}
               </AnimatePresence>
-            </div>
+            </motion.div>
           )}
         </motion.div>
       </div>
