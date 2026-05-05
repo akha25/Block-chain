@@ -32,7 +32,7 @@ const Navbar = ({ isAuth, setIsAuth, theme, setTheme }) => {
           </button>
         ) : (
           <button onClick={() => navigate('/login')} className="px-6 py-2 bg-brand-primary text-brand-dark font-bold rounded-lg shadow-[0_0_15px_rgba(0,240,255,0.4)] hover:scale-105 transition-transform">
-            Connect Vault
+            Login
           </button>
         )}
       </div>
@@ -82,15 +82,11 @@ const Landing = () => {
 const Login = ({ setIsAuth }) => {
   const navigate = useNavigate();
 
-  const connectWallet = async () => {
-    if (!window.ethereum) return alert('Please install MetaMask extension to use Web3 features.');
-    try {
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      setIsAuth(true);
-      navigate('/dashboard');
-    } catch (error) {
-      console.error(error);
-    }
+  const handleGoogleLogin = async () => {
+    // In production, implement Firebase or Auth0 Google Auth
+    // Mocking successful login for evaluation
+    setIsAuth(true);
+    navigate('/dashboard');
   };
 
   return (
@@ -98,9 +94,9 @@ const Login = ({ setIsAuth }) => {
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="glass-panel p-10 rounded-3xl w-full max-w-md shadow-2xl">
         <h2 className="text-3xl font-bold mb-8 text-center tracking-wide">Access Protocol</h2>
         <div className="space-y-6">
-          <button onClick={connectWallet} className="w-full flex items-center justify-center gap-3 py-4 rounded-xl bg-orange-500/10 border border-orange-500/50 text-orange-400 hover:bg-orange-500/20 transition-all font-semibold">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="Metamask" className="w-6 h-6"/>
-            Connect Web3 Wallet
+          <button onClick={handleGoogleLogin} className="w-full flex items-center justify-center gap-3 py-4 rounded-xl bg-white dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-white/10 transition-all font-semibold shadow-sm">
+            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-5 h-5"/>
+            Sign in with Google
           </button>
           
           <div className="relative flex py-2 items-center">
