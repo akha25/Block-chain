@@ -71,12 +71,17 @@ export default function Dashboard() {
     const loadingToast = toast.loading('Retrieving & Decrypting file...');
     try {
       const res = await axios.get(`http://localhost:5000/api/files/download/${file.cid}`, { responseType: 'blob' });
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const url = window.URL.createObjectURL(res.data);
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', file.name);
       document.body.appendChild(link);
       link.click();
+      
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
       toast.success('File successfully decrypted and downloaded', { id: loadingToast });
     } catch (error) {
       toast.error('Decryption failed', { id: loadingToast });
@@ -87,12 +92,17 @@ export default function Dashboard() {
     const loadingToast = toast.loading('Retrieving raw encrypted payload...');
     try {
       const res = await axios.get(`http://localhost:5000/api/files/raw/${file.cid}`, { responseType: 'blob' });
-      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const url = window.URL.createObjectURL(res.data);
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `ENCRYPTED_${file.name}.enc`);
       document.body.appendChild(link);
       link.click();
+
+      // Cleanup
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
       toast.success('Raw encrypted file downloaded for proof!', { id: loadingToast });
     } catch (error) {
       toast.error('Failed to fetch raw file', { id: loadingToast });
