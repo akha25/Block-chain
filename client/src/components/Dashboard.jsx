@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UploadCloud, File, Download, CheckCircle, AlertTriangle, Shield, HardDrive, Clock } from 'lucide-react';
+import { UploadCloud, File, Download, CheckCircle, AlertTriangle, Shield, HardDrive, Clock, Lock } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -80,6 +80,22 @@ export default function Dashboard() {
       toast.success('File successfully decrypted and downloaded', { id: loadingToast });
     } catch (error) {
       toast.error('Decryption failed', { id: loadingToast });
+    }
+  };
+
+  const handleDownloadEncrypted = async (file) => {
+    const loadingToast = toast.loading('Retrieving raw encrypted payload...');
+    try {
+      const res = await axios.get(`http://localhost:5000/api/files/raw/${file.cid}`, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `ENCRYPTED_${file.name}.enc`);
+      document.body.appendChild(link);
+      link.click();
+      toast.success('Raw encrypted file downloaded for proof!', { id: loadingToast });
+    } catch (error) {
+      toast.error('Failed to fetch raw file', { id: loadingToast });
     }
   };
 
@@ -192,6 +208,9 @@ export default function Dashboard() {
                       
                       <button onClick={() => verifyIntegrity(file)} className="p-2.5 text-gray-400 hover:text-brand-primary hover:bg-brand-primary/10 rounded-xl transition-all" title="Verify Blockchain Hash">
                         <Shield className="w-5 h-5" />
+                      </button>
+                      <button onClick={() => handleDownloadEncrypted(file)} className="p-2.5 text-orange-400 bg-orange-400/10 hover:bg-orange-400/20 rounded-xl transition-all" title="Download Raw Encrypted Payload (Proof)">
+                        <Lock className="w-5 h-5" />
                       </button>
                       <button onClick={() => handleDownload(file)} className="p-2.5 bg-brand-primary text-brand-dark rounded-xl hover:scale-105 transition-transform shadow-[0_0_10px_rgba(0,240,255,0.3)]" title="Decrypt & Download">
                         <Download className="w-5 h-5" />

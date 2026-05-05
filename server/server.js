@@ -145,6 +145,33 @@ app.get('/api/files/download/:cid', async (req, res) => {
     }
 });
 
+// ==========================================
+// RAW ENCRYPTED DOWNLOAD (For Evaluation Proof)
+// ==========================================
+app.get('/api/files/raw/:cid', async (req, res) => {
+    try {
+        const { cid } = req.params;
+
+        let encryptedBuffer;
+        if (cid.startsWith('QmMock')) {
+            encryptedBuffer = mockStorage[cid];
+            if (!encryptedBuffer) throw new Error("Mock file not found.");
+        } else {
+            const gatewayUrl = `${process.env.PINATA_GATEWAY}/ipfs/${cid}`;
+            const response = await axios.get(gatewayUrl, { responseType: 'arraybuffer' });
+            encryptedBuffer = Buffer.from(response.data);
+        }
+
+        // Send the raw, AES-256 encrypted buffer directly (it will be garbled text/binary)
+        res.set('Content-Type', 'application/octet-stream');
+        res.send(encryptedBuffer);
+
+    } catch (error) {
+        console.error('Raw Download Error:', error.message);
+        res.status(500).json({ error: 'Failed to fetch raw file' });
+    }
+});
+
 // Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
